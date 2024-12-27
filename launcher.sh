@@ -2,7 +2,7 @@
 
 # Caminho do arquivo config.py e do ambiente virtual
 config_path="$HOME/.scripts/hypr/config.py"
-venv_python="$HOME/.scripts/venv/bin/python"
+# venv_python="$HOME/.scripts/venv/bin/python"
 
 # Verifica se o processo já está em execução
 if pgrep -f "$config_path" > /dev/null; then
