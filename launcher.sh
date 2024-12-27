@@ -12,5 +12,5 @@ if pgrep -f "$config_path" > /dev/null; then
 else
     # Se o processo não estiver em execução, inicia o processo
     echo "O processo não está em execução. Iniciando..."
-    $config_path   # O "&" não faz o menor sentido aqui
+    $config_path   # O "&" não faz o menor sentido aqui ele é desnecessario
 fi
