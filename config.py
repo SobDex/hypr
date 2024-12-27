@@ -1,3 +1,5 @@
+#!/bin/python3
+
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QGridLayout, QScrollArea, QPushButton, QSizePolicy, QVBoxLayout, QLabel
 from PyQt5.uic import loadUi
@@ -38,9 +40,27 @@ class SystemInfoDialog(QDialog):
         total_mem = subprocess.getoutput("free -m | grep '^[Mem.:]' | awk '{print $2}'")
         total_disk = subprocess.getoutput("df -Th / | tail -1 | awk '{print $3}'")
         used_disk = subprocess.getoutput("df -Th / | tail -1 | awk '{print $4}'")
-        graphics = subprocess.getoutput("lspci | grep VGA | awk '{print $11, $12, $13}'")
-        temp_radeon = subprocess.getoutput("sensors | grep -A 0 'edge' | cut -c16-17")
-        temp_cpu = subprocess.getoutput("sensors | grep -A 0 'temp1' | cut -c16-17")
+        graphics = subprocess.getoutput(
+            """if [[ $(nvidia-smi) ]]; then
+                nvidia-smi -q | grep "Product Name" | sed 's/.*: //;s/\\(.*\\)/[\\1]/'
+            else
+                lspci | grep VGA | awk '{print $11, $12, $13}'
+            fi"""
+        )
+        temp_radeon = subprocess.getoutput(
+            """if [[ $(nvidia-smi) ]]; then
+                nvidia-smi -q | grep "GPU Current Temp" | sed 's/.*: //;s/ C/ºC/'
+            else
+                sensors | grep -A 0 'edge' | cut -c16-17
+            fi"""
+        )
+        temp_cpu = subprocess.getoutput(
+            """if [[ $(cat /proc/cpuinfo | grep "vendor_id" | head -n 1 | sed 's/.*: //') == 'GenuineIntel' ]]; then
+                sensors | grep "Package" | sed 's/\..*//;s/.*+//'
+            else
+                sensors | grep -A 0 'temp1' | cut -c16-17
+            fi"""
+        )
 
         # Adicionar informações ao layout
         layout.addWidget(QLabel(f"<b>Distribuição:</b> {distro}"))
