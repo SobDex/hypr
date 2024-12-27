@@ -1,3 +1,5 @@
+#!/bin/python3
+
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QGridLayout, QScrollArea, QPushButton, QSizePolicy, QVBoxLayout, QLabel
 from PyQt5.uic import loadUi
